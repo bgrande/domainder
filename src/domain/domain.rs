@@ -1,3 +1,3 @@
-fn write_domain(domain: String) {
+fn write_domain(record: WhoisResult) {
 
 }

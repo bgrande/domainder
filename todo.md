@@ -1,4 +1,5 @@
 # Todo (small mods)
+- download whois server config if not existing
 - whois domain into json file
 - create reminder for domain (x days/weeks before)
 - remind via email
@@ -11,6 +12,7 @@
 - needs either a cronjob (once a day) or service running (web?) in background for reminder
 
 # How
+- we may want to use i.e. https://crates.io/crates/check-if-email-exists for checking if the email address is valid/exists
 - clap console app for now as frontend
   - --remind [domain] [?timeRange]
   - --update [domain] [?timeRange]

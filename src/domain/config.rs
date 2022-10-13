@@ -30,6 +30,7 @@ fn create_config_path() {
     fs::create_dir_all(&get_server_path().unwrap()).expect("failed creating the config path");
 }
 
+// got this mostly from https://georgik.rocks/how-to-download-binary-file-in-rust-by-reqwest/
 async fn download_server_file()-> Result<()> {
     create_config_path();
     
