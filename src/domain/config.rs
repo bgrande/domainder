@@ -1,7 +1,7 @@
 use std::env;
 use std::fs;
 use std::fs::File;
-use std::io::{copy, Read};
+use std::io::{copy};
 use std::io::Cursor;
 use std::path::Path;
 use reqwest;
@@ -14,7 +14,7 @@ const SERVER_FILE_SOURCE: &str = "https://raw.githubusercontent.com/FurqanSoftwa
 
 fn get_server_path() -> std::result::Result<String, std::io::Error> {
     let path = env::current_dir()?;
-    let sub_path = path.to_str().ok_or("");
+    let sub_path = path.to_str().ok_or("could not unwind base path");
     Ok(sub_path.unwrap().to_string() + "/" + SERVER_PATH)
 }
 
@@ -39,7 +39,7 @@ async fn download_server_file()-> Result<()> {
     let mut content = Cursor::new(response.bytes().await?);
     let mut file = File::create(get_server_file_path())?;
 
-    copy(&mut content, &mut file);
+    copy(&mut content, &mut file).expect("could not write the server config");
     Ok(())
 }
 
