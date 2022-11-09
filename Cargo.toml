@@ -6,7 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+chrono = { version = "0.4.22" }
 clap = { version = "4.0.12", features = ["derive"] }
+lettre = "0.10"
 whois-rust = "1.5.0"
 reqwest = "0.11.12"
 tokio = {version = "1.21.2", features = ["full"]}

@@ -14,9 +14,9 @@
 # How
 - we may want to use i.e. https://crates.io/crates/check-if-email-exists for checking if the email address is valid/exists
 - clap console app for now as frontend
-  - --remind [domain] [?timeRange]
-  - --update [domain] [?timeRange]
-  - --check [?domain]
+  - --add [domain] [email] [?timeRange]
+  - --update [?domain] [?email] [?timeRange]
+  - --remind [?domain]
 - separate module for 
   - whois to json
   - create reminder for domain

@@ -3,18 +3,20 @@ use crate::reminder::result::Reminder;
 
 const BASE_PATH: &str = "data/reminder";
 
-pub(crate) fn write_reminder(record: Reminder) -> std::io::Result<()> {
+pub(crate) fn write_reminder(record: &Reminder) -> std::io::Result<()> {
     std::fs::write(
         get_reminder_path(record.domain.clone()).unwrap(),
         serde_json::to_string_pretty(&record).unwrap(),
     )
 }
 
-pub(crate) fn hydrate_reminder(domain: &String, time: String, expiry: &String) -> Reminder {
+pub(crate) fn hydrate_reminder(domain: &String, time: String, expiry: &String, email: &String) -> Reminder {
     Reminder {
+        email: email.to_string(),
         domain: domain.to_string(),
         expiry: expiry.to_string(),
-        remind_time: time
+        remind_time: time,
+        sent: 0
     }
 }
 
