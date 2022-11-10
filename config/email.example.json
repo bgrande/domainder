@@ -1,0 +1,8 @@
+{
+  "from_name": "Domainder",
+  "from_email": "youremail@domain.tld",
+  "smtp_host": "the.email.host",
+  "smtp_user": "the_user_name",
+  "smtp_pass": "the_password_should_be_secure",
+  "smtp_port": "587"
+}

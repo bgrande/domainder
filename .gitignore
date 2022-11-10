@@ -1,5 +1,6 @@
 /target
 domainder.iml
 .idea
-config
+config/email.json
+config/server.json
 data
