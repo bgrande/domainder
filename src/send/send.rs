@@ -1,5 +1,4 @@
 use std::{env, fs};
-use std::path::Path;
 use crate::reminder::result::Reminder;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
@@ -18,20 +17,20 @@ struct EmailConfig {
     smtp_port: String,
 }
 
-pub(crate) fn send_email(reminder: &Reminder) {
+pub(crate) fn send_email(reminder: &Reminder) -> bool {
     let email = &reminder.email;
 
     let body = format!(
-        "Hi!\r\n\r\nYou asked me to remind you about your domain \"{}\"\r\n\r\n\
+        "Hi!\r\n\r\nYou asked me to remind you about your domain \"{}\".\r\n\r\n\
         The domain is due to expire at {}.\r\n\r\n\
         Now, ask yourself! \
         Do you still need that domain?\r\n\
-        If it's still important you might want to renew. \
-        Otherwise just drop it and save some money. \
+        If it's still important you might want to renew.\r\n\
+        Otherwise just drop it and save some money.\r\n\
         Or you could even try to sell it!\r\n\r\n\
         All the best for your journey!",
         reminder.domain,
-        reminder.expiry
+        reminder.expiry // todo format with a more readable display
     );
 
     let path = env::current_dir().unwrap();
@@ -58,8 +57,14 @@ pub(crate) fn send_email(reminder: &Reminder) {
         .credentials(creds)
         .build();
 
-    match mailer.send(&email) {
-        Ok(_) => println!("Email sent successfully!"),
-        Err(e) => panic!("Could not send email: {:?}", e),
+    return match mailer.send(&email) {
+        Ok(_) => {
+            println!("Email sent successfully!");
+            true
+        },
+        Err(e) => {
+            panic!("Could not send email: {:?}", e);
+            false
+        },
     }
 }
