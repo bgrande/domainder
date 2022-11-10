@@ -2,8 +2,6 @@ use clap::{Parser, Subcommand};
 use crate::domain::domain::write_domain;
 use crate::reminder::remind::{hydrate_reminder, write_reminder};
 use crate::send::remind::remind;
-use crate::send::send::{send_email};
-
 pub(crate) mod domain;
 pub(crate) mod reminder;
 pub(crate) mod send;
@@ -63,7 +61,7 @@ async fn process_add(domain: &String, email: &String, time: &str) {
 
     write_domain(&await_whois).expect("could not write domain info");
 
-    let reminder = hydrate_reminder(&domain, time.to_string(), &await_whois.expiry.clone(), email);
+    let reminder = hydrate_reminder(&domain, &time.to_string(), &await_whois.expiry.clone(), email);
     write_reminder(&reminder).expect("could not write reminder");
 }
 
@@ -102,7 +100,7 @@ async fn main() {
       + write required data into domains/domain_name.json (name, registry, registration_date, expiration_date)
       + create reminder in reminder/[reminder_date].json
       + send email to remind about domains
-      - send emails conditionally (by time)
+      + send emails conditionally (by time)
       5. cleanup domains that don't exist anymore
       6. (auto) update the domains dates when marked as reminded
       7. only remind specified domain

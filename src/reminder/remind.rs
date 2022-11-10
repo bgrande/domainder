@@ -10,12 +10,12 @@ pub(crate) fn write_reminder(record: &Reminder) -> std::io::Result<()> {
     )
 }
 
-pub(crate) fn hydrate_reminder(domain: &String, time: String, expiry: &String, email: &String) -> Reminder {
+pub(crate) fn hydrate_reminder(domain: &String, time: &String, expiry: &String, email: &String) -> Reminder {
     Reminder {
-        email: email.to_string(),
-        domain: domain.to_string(),
-        expiry: expiry.to_string(),
-        remind_time: time,
+        email: email.trim().to_string(),
+        domain: domain.trim().to_string(),
+        expiry: expiry.trim().to_string(),
+        remind_time: time.trim().to_string(),
         sent: 0
     }
 }
