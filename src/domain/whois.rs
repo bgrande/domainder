@@ -45,7 +45,7 @@ fn hydrate_whois(lookup: String, domain: &str) -> WhoisResult {
 
 pub(crate) async fn whois_domain(domain: &String) ->  impl Future<Output=WhoisResult> {
     if !config::get_server_file().await {
-        // @todo return with error
+        // todo return with error
     }
 
     let whois = WhoIs::from_path(get_server_file_path()).unwrap();
@@ -54,7 +54,7 @@ pub(crate) async fn whois_domain(domain: &String) ->  impl Future<Output=WhoisRe
 
     if lookup.contains("Status: free") || lookup.contains("No match for domain") {
         println!("domain {} does not exist", domain);
-        // @todo skip right here (how to resolve the future here?)
+        // todo skip right here (how to solve with future here?)
         // return;
     }
 
