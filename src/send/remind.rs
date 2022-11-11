@@ -1,15 +1,15 @@
-use std::{env, fs};
-use chrono::{DateTime, Duration, Utc};
 use crate::reminder::result::Reminder;
-use serde_json::{self, from_str};
 use crate::send::send::send_email;
+use chrono::{DateTime, Duration, Utc};
+use serde_json::{self, from_str};
+use std::{env, fs};
 
 const BASE_PATH: &str = "data/reminder";
 
 enum DurationTypes {
     Months,
     Weeks,
-    Days
+    Days,
 }
 
 pub(crate) fn remind() {
@@ -45,7 +45,7 @@ fn should_remind(reminder: &Reminder) -> bool {
             // very simple months to weeks conversion here:
             let simple_weeks = 4 * duration_time;
             Duration::weeks(simple_weeks)
-        },
+        }
         DurationTypes::Weeks => Duration::weeks(duration_time),
         DurationTypes::Days => Duration::days(duration_time),
     };
@@ -53,7 +53,7 @@ fn should_remind(reminder: &Reminder) -> bool {
     let remind_date = expiry.unwrap().checked_sub_signed(duration);
 
     if remind_date.unwrap().le(&now) {
-        return true
+        return true;
     }
 
     false
@@ -61,20 +61,24 @@ fn should_remind(reminder: &Reminder) -> bool {
 
 fn get_duration_type(reminder: &Reminder) -> DurationTypes {
     if reminder.remind_time.ends_with("m") {
-        return DurationTypes::Months
+        return DurationTypes::Months;
     }
 
     if reminder.remind_time.ends_with("w") {
-        return DurationTypes::Weeks
+        return DurationTypes::Weeks;
     }
 
     if reminder.remind_time.ends_with("d") {
-        return DurationTypes::Days
+        return DurationTypes::Days;
     }
 
     DurationTypes::Months
 }
 
 fn get_duration_time(reminder: &Reminder) -> i64 {
-    reminder.remind_time.trim_end_matches(|p| p == 'm' || p == 'w' || p == 'd').parse().unwrap_or(1)
+    reminder
+        .remind_time
+        .trim_end_matches(|p| p == 'm' || p == 'w' || p == 'd')
+        .parse()
+        .unwrap_or(1)
 }

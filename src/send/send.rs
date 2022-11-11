@@ -1,8 +1,8 @@
-use std::{env, fs};
 use crate::reminder::result::Reminder;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
 use serde::{Deserialize, Serialize};
+use std::{env, fs};
 
 const CONFIG_PATH: &str = "config";
 const CONFIG_FILE: &str = "/email.json";
@@ -34,7 +34,8 @@ pub(crate) fn send_email(reminder: &Reminder) -> bool {
     );
 
     let path = env::current_dir().unwrap();
-    let config_file_path = String::from(path.to_str().unwrap()) + "/" + CONFIG_PATH + "/" + CONFIG_FILE;
+    let config_file_path =
+        String::from(path.to_str().unwrap()) + "/" + CONFIG_PATH + "/" + CONFIG_FILE;
 
     let data = fs::read_to_string(config_file_path);
     let json_config: EmailConfig = serde_json::from_str(&data.unwrap()).unwrap();
@@ -42,7 +43,7 @@ pub(crate) fn send_email(reminder: &Reminder) -> bool {
     let from = json_config.from_name + " <" + &json_config.from_email + ">";
     let subject = String::from("Your domain ") + &reminder.domain + " is about to expire";
     let to = String::from("<") + email.as_str() + ">";
-    
+
     let email = Message::builder()
         .from(from.parse().unwrap())
         .to(to.parse().unwrap())
@@ -61,10 +62,10 @@ pub(crate) fn send_email(reminder: &Reminder) -> bool {
         Ok(_) => {
             println!("Email sent successfully!");
             true
-        },
+        }
         Err(e) => {
             panic!("Could not send email: {:?}", e);
             false
-        },
-    }
+        }
+    };
 }

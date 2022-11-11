@@ -1,18 +1,18 @@
-use std::future::{Future, ready};
 use super::config;
-use whois_rust::{WhoIs, WhoIsLookupOptions};
+use super::result::WhoisResult;
 use crate::domain::config::get_server_file_path;
-use super::result::{WhoisResult};
+use std::future::{ready, Future};
+use whois_rust::{WhoIs, WhoIsLookupOptions};
 
 fn hydrate_whois(lookup: String, domain: &str) -> WhoisResult {
     let split_by_newline = lookup.split("\n");
-    
+
     let mut whois = WhoisResult {
         domain: domain.to_string(),
         server: "".to_string(),
         updated: "".to_string(),
         expiry: "auto".to_string(),
-        created: "".to_string()
+        created: "".to_string(),
     };
 
     for newline_split in split_by_newline {
@@ -27,7 +27,9 @@ fn hydrate_whois(lookup: String, domain: &str) -> WhoisResult {
             whois.server = String::from(values[1]);
         }
 
-        if String::from(values[0]).contains("Updated") || String::from(values[0]).contains("Changed") {
+        if String::from(values[0]).contains("Updated")
+            || String::from(values[0]).contains("Changed")
+        {
             whois.updated = String::from(values[1]) + ":" + values[2] + ":" + values[3];
         }
 
@@ -43,14 +45,17 @@ fn hydrate_whois(lookup: String, domain: &str) -> WhoisResult {
     whois
 }
 
-pub(crate) async fn whois_domain(domain: &String) ->  impl Future<Output=WhoisResult> {
+pub(crate) async fn whois_domain(domain: &String) -> impl Future<Output=WhoisResult> {
     if !config::get_server_file().await {
         // todo return with error
     }
 
     let whois = WhoIs::from_path(get_server_file_path()).unwrap();
 
-    let lookup = whois.lookup(WhoIsLookupOptions::from_string(domain).unwrap()).unwrap().to_string();
+    let lookup = whois
+        .lookup(WhoIsLookupOptions::from_string(domain).unwrap())
+        .unwrap()
+        .to_string();
 
     if lookup.contains("Status: free") || lookup.contains("No match for domain") {
         println!("domain {} does not exist", domain);

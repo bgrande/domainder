@@ -1,7 +1,7 @@
-use clap::{Parser, Subcommand};
 use crate::domain::domain::write_domain;
 use crate::reminder::remind::{hydrate_reminder, write_reminder};
 use crate::send::remind::remind;
+use clap::{Parser, Subcommand};
 pub(crate) mod domain;
 pub(crate) mod reminder;
 pub(crate) mod send;
@@ -12,7 +12,7 @@ const DEFAULT_TIME: &str = "1m";
 #[command(name = "domainder", author = "Benedikt Grande", version = "0.1", about = "reminds you about any domain expiry", long_about = None)]
 struct Args {
     #[command(subcommand)]
-    command: Option<Commands>
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -42,13 +42,13 @@ enum Commands {
     Remind {
         #[arg(short, long)]
         domain: Option<String>,
-    }
+    },
 }
 
 fn get_value<'a>(time: &'a Option<String>, default: &'a str) -> &'a str {
     match time.as_deref() {
         Some(value) => value,
-        None => default
+        None => default,
     }
 }
 
@@ -61,7 +61,12 @@ async fn process_add(domain: &String, email: &String, time: &str) {
 
     write_domain(&await_whois).expect("could not write domain info");
 
-    let reminder = hydrate_reminder(&domain, &time.to_string(), &await_whois.expiry.clone(), email);
+    let reminder = hydrate_reminder(
+        &domain,
+        &time.to_string(),
+        &await_whois.expiry.clone(),
+        email,
+    );
     write_reminder(&reminder).expect("could not write reminder");
 }
 
@@ -79,15 +84,23 @@ async fn main() {
     let args = Args::parse();
 
     match &args.command {
-        Some(Commands::Add { domain, time, email }) => {
+        Some(Commands::Add {
+                 domain,
+                 time,
+                 email,
+             }) => {
             let time_string = get_value(&time, DEFAULT_TIME);
             process_add(domain, email, time_string).await;
         }
-        Some(Commands::Update {domain, time, email}) => {
+        Some(Commands::Update {
+                 domain,
+                 time,
+                 email,
+             }) => {
             let time_string = get_value(&time, DEFAULT_TIME);
             process_update(domain, email, time_string);
         }
-        Some(Commands::Remind {domain}) => {
+        Some(Commands::Remind { domain }) => {
             process_remind(domain);
         }
         None => {
@@ -96,14 +109,14 @@ async fn main() {
         }
     }
     /* @todo:
-      + convert to json (via filling struct with the data we need?)
-      + write required data into domains/domain_name.json (name, registry, registration_date, expiration_date)
-      + create reminder in reminder/[reminder_date].json
-      + send email to remind about domains
-      + send emails conditionally (by time)
-      5. cleanup domains that don't exist anymore
-      6. (auto) update the domains dates when marked as reminded
-      7. only remind specified domain
-      8. add readme on how to use and create cronjob
-   */
+       + convert to json (via filling struct with the data we need?)
+       + write required data into domains/domain_name.json (name, registry, registration_date, expiration_date)
+       + create reminder in reminder/[reminder_date].json
+       + send email to remind about domains
+       + send emails conditionally (by time)
+       5. cleanup domains that don't exist anymore
+       6. (auto) update the domains dates when marked as reminded
+       7. only remind specified domain
+       8. add readme on how to use and create cronjob
+    */
 }
