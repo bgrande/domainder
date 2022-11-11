@@ -58,14 +58,14 @@ pub(crate) fn send_email(reminder: &Reminder) -> bool {
         .credentials(creds)
         .build();
 
-    return match mailer.send(&email) {
+    match mailer.send(&email) {
         Ok(_) => {
             println!("Email sent successfully!");
             true
         }
         Err(e) => {
-            panic!("Could not send email: {:?}", e);
+            println!("Could not send email: {:?}", e);
             false
         }
-    };
+    }
 }
