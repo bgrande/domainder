@@ -17,5 +17,5 @@ fn get_data_path(name: String) -> std::result::Result<String, std::io::Error> {
     fs::create_dir_all(base_path.unwrap().to_string() + "/" + BASE_PATH)
         .expect("failed creating the domain path");
 
-    Ok(base_path.unwrap().to_string() + "/" + BASE_PATH + "/" + &*name.to_string())
+    Ok(format!("{}/{}/{}", base_path.unwrap(), BASE_PATH, name))
 }

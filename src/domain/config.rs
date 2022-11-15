@@ -16,7 +16,7 @@ const SERVER_FILE_SOURCE: &str =
 fn get_server_path() -> std::result::Result<String, std::io::Error> {
     let path = env::current_dir()?;
     let sub_path = path.to_str().ok_or("could not unwind base path");
-    Ok(sub_path.unwrap().to_string() + "/" + SERVER_PATH)
+    Ok(format!("{}/{}", sub_path.unwrap(), SERVER_PATH))
 }
 
 pub fn get_server_file_path() -> String {
