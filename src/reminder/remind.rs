@@ -4,7 +4,7 @@ use std::{env, fs};
 const BASE_PATH: &str = "data/reminder";
 
 pub(crate) fn write_reminder(record: &Reminder) -> std::io::Result<()> {
-    std::fs::write(
+    fs::write(
         get_reminder_path(record.domain.clone()).unwrap(),
         serde_json::to_string_pretty(&record).unwrap(),
     )
